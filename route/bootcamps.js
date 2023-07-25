@@ -5,15 +5,31 @@ const {
   createBootcamp,
   updateBootcamp,
   deleteBootcamp,
+  getBootcampsAroundZipcode,
 } = require("../controller/bootcamps")
+const { protect, authorize } = require("../middleware/auth")
+
+const courseRouter = require("./course")
+const reviewRouter = require("./review")
 const router = express.Router()
 
-router.route("/").get(getBootcamps).post(createBootcamp)
+//Re-route routes
+router.use("/:bootcampId/courses", courseRouter)
+router.use("/:bootcampId/reviews", reviewRouter)
+
+router
+  .route("/")
+  .get(getBootcamps)
+  .post(protect, authorize("publisher", "admin"), createBootcamp)
 
 router
   .route("/:id")
   .get(getSingleBootcamps)
-  .put(updateBootcamp)
-  .delete(deleteBootcamp)
+  .put(protect, authorize("publisher", "admin"), updateBootcamp)
+  .delete(protect, authorize("publisher", "admin"), deleteBootcamp)
+
+router
+  .route("/radius/:zipcode/:distance")
+  .get(protect, getBootcampsAroundZipcode)
 
 module.exports = router

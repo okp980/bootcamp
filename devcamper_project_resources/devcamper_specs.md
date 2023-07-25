@@ -42,18 +42,7 @@ Create the backend for a bootcamp directory website. The frontend/UI will be cre
 - Delete course
   * Owner only
   
-### Reviews
-- List all reviews for a bootcamp
-- List all reviews in general
-  * Pagination, filtering, etc
-- Get a single review
-- Create a review
-  * Authenticated users only
-  * Must have the role "user" or "admin" (no publishers)
-- Update review
-  * Owner only
-- Delete review
-  * Owner only
+/
 
 ### Users & Authentication
 - Authentication will be ton using JWT/cookies

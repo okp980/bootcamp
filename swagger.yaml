@@ -1,0 +1,825 @@
+openapi: 3.0.0
+info:
+  title: Devcamper API
+  description: API documentation for Devcamper
+  version: 0.1.0
+  contact:
+    email: okpunorrex@gmail.com
+
+servers:
+  - url: http://localhost:5000/api/v1
+    description: localhost server
+  - url: https://devcamper.io/api/v1
+    description: remote server
+security:
+  - BearerAuth: []
+
+paths:
+  # Authentication
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Login in to Devcamper
+      requestBody:
+        $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200LoginResponse"
+        "401":
+          $ref: "#/components/responses/401UnauthenticatedError"
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register
+      description: Register to Devcamper
+      requestBody:
+        $ref: "#/components/requestBodies/RegisterRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/200LoginResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+        "403":
+          $ref: "#/components/responses/403Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get me
+      description: To get a logged in user information
+
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetUserResponse"
+        "401":
+          $ref: "#/components/responses/401UnauthenticatedError"
+        "500":
+          $ref: "#/components/responses/500Error"
+    put:
+      tags:
+        - Authentication
+      summary: Update profile
+      description: To update user information
+      requestBody:
+        $ref: "#/components/requestBodies/UpdateProfileRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetUserResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+        "401":
+          $ref: "#/components/responses/401UnauthenticatedError"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /auth/forgotPassword:
+    post:
+      tags:
+        - Authentication
+      summary: Forgot Password
+      description: To get a reset link to reset user password
+      requestBody:
+        $ref: "#/components/requestBodies/ForgetPasswordRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200ResponseWithOutData"
+        "400":
+          $ref: "#/components/responses/400Error"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /auth/resetPassword/{resetToken}:
+    post:
+      tags:
+        - Authentication
+      summary: Reset Password
+      description: To reset user password
+      parameters:
+        - $ref: "#/components/parameters/resetTokenParam"
+      requestBody:
+        $ref: "#/components/requestBodies/ResetPasswordRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200ResponseWithOutData"
+        "400":
+          $ref: "#/components/responses/400Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /auth/password:
+    put:
+      tags:
+        - Authentication
+      summary: Change Password
+      description: update user password
+      requestBody:
+        $ref: "#/components/requestBodies/ChangePasswordRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200ResponseWithOutData"
+        "401":
+          $ref: "#/components/responses/401AuthTokenError"
+        "400":
+          $ref: "#/components/responses/400Error"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+
+  # Bootcamps
+  /bootcamps:
+    get:
+      tags:
+        - Bootcamps
+      summary: Get All bootcamps
+      description: To get all bootcamps
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetBootcampResponse"
+
+        "500":
+          $ref: "#/components/responses/500Error"
+    post:
+      tags:
+        - Bootcamps
+      summary: Create a bootcamp
+      description: create a bootcamp
+      requestBody:
+        $ref: "#/components/requestBodies/BootcampRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/200GetBootcampResponse"
+        "403":
+          $ref: "#/components/responses/403Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /radius/{zipcode}/{distance}:
+    get:
+      tags:
+        - Bootcamps
+      summary: Get All bootcamps
+      description: To get all bootcamps within distance
+      parameters:
+        - $ref: "#/components/parameters/zipcodeParam"
+        - $ref: "#/components/parameters/distanceParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetBootcampResponse"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /bootcamps/{id}:
+    get:
+      tags:
+        - Bootcamps
+      summary: Get single course
+      description: To get a single course
+      parameters:
+        - $ref: "#/components/parameters/CourseIdParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetSingleCourseResponse"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+    put:
+      tags:
+        - Bootcamps
+      summary: Update course
+      description: To update a course
+      parameters:
+        - $ref: "#/components/parameters/courseIdParam"
+      requestBody:
+        $ref: "#/components/requestBodies/CourseRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetSingleCourseResponse"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "403":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+    delete:
+      tags:
+        - Bootcamps
+      summary: Delete course
+      description: To delete a course
+      parameters:
+        - $ref: "#/components/parameters/courseIdParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/200ResponseWithOutData"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "403":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  # Courses
+  /courses:
+    get:
+      tags:
+        - Courses
+      summary: Get All Courses
+      description: To get all courses in a bootcamp
+      responses:
+        "200":
+          $ref: "#/components/responses/200CoursesResponse"
+
+        "500":
+          $ref: "#/components/responses/500Error"
+    post:
+      tags:
+        - Courses
+      summary: Create a course
+      description: create a course
+      requestBody:
+        $ref: "#/components/requestBodies/CourseRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/200GetSingleCourseResponse"
+        "403":
+          $ref: "#/components/responses/403Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+  /courses/{id}:
+    get:
+      tags:
+        - Courses
+      summary: Get single course
+      description: To get a single course
+      parameters:
+        - $ref: "#/components/parameters/CourseIdParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetSingleCourseResponse"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+    put:
+      tags:
+        - Courses
+      summary: Update course
+      description: To update a course
+      parameters:
+        - $ref: "#/components/parameters/courseIdParam"
+      requestBody:
+        $ref: "#/components/requestBodies/CourseRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/200GetSingleCourseResponse"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "403":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+    delete:
+      tags:
+        - Courses
+      summary: Delete course
+      description: To delete a course
+      parameters:
+        - $ref: "#/components/parameters/courseIdParam"
+      responses:
+        "200":
+          $ref: "#/components/responses/200ResponseWithOutData"
+        "404":
+          $ref: "#/components/responses/404Error"
+        "403":
+          $ref: "#/components/responses/404Error"
+        "500":
+          $ref: "#/components/responses/500Error"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        createdAt:
+          type: string
+      example:
+        _id: "5c8a1d5b0190b214360dc031"
+        name: "Mary Williams"
+        email: "mary@gmail.com"
+        role: "publisher"
+        createdAt: "2023-04-01T13:58:33.717Z"
+    Course:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        weeks:
+          type: integer
+        tuition:
+          type: integer
+        minimumSkill:
+          type: string
+        scholarhipsAvailable:
+          type: boolean
+        bootcamp:
+          type: string
+        createdAt:
+          type: string
+
+    Bootcamp:
+      type: object
+      properties:
+        _id:
+          type: string
+        location:
+          $ref: "#/components/schemas/Location"
+        name:
+          type: string
+        description:
+          type: string
+        website:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+        careers:
+          type: array
+          items:
+            type: string
+        housing:
+          type: boolean
+        jobAssistance:
+          type: boolean
+        jobGuarantee:
+          type: boolean
+        acceptGi:
+          type: boolean
+        slug:
+          type: string
+        averagePrice:
+          type: integer
+        averageRating:
+          type: integer
+        courses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Course"
+        createdAt:
+          type: string
+    Location:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          item:
+            type: string
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipcode:
+          type: string
+        country:
+          type: string
+
+    BootcampBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        website:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        careers:
+          type: array
+          items:
+            type: string
+        housing:
+          type: boolean
+        jobAssistance:
+          type: boolean
+        jobGuarantee:
+          type: boolean
+        acceptGi:
+          type: boolean
+      example:
+        name: Devworks Bootcamp
+        email: ell@ddf.com
+        description: Devworks is a full stack JavaScript Bootcamp located in the heart of Boston that focuses on the technologies you need to get a high paying job as a web developer
+        website: https://devworks.com
+        phone: "(111) 111-1111"
+        address: 233 Bay State Rd Boston MA 02215
+        careers: ["Web Development", "UI/UX", "Business"]
+        housing: true
+        jobAssistance: true
+        jobGuarantee: false
+        acceptGi: true
+    CourseBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        weeks:
+          type: integer
+        tuition:
+          type: integer
+        minimumSkill:
+          type: string
+        scholarhipsAvailable:
+          type: boolean
+      example:
+        title: Web Development
+        description: This course will teach you how to build high quality web applications with technologies like React, Node.js, PHP & Laravel
+        weeks: 8
+        tuition: 8000
+        minimumSkill: beginner
+        scholarhipsAvailable: false
+  parameters:
+    resetTokenParam:
+      in: path
+      name: resetToken
+      required: true
+      schema:
+        type: string
+      description: The reset token sent to user
+    bootcampIdParam:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      description: The ID of the bootcamp
+    CourseIdParam:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      description: The ID of the course
+    zipcodeParam:
+      in: path
+      name: zipcode
+      required: true
+      schema:
+        type: string
+      description: The radius of the bootcamps to search within
+    distanceParam:
+      in: path
+      name: distance
+      required: true
+      schema:
+        type: string
+      description: The distance of the bootcamps to search within
+  requestBodies:
+    LoginRequest:
+      description: Devcamper authentication
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+            required:
+              - email
+              - password
+            example:
+              email: mary@gmail.com
+              password: "123456"
+    ForgetPasswordRequest:
+      description: User to enter registered email to receive reset link
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+
+            required:
+              - email
+
+            example:
+              email: mary@gmail.com
+    ChangePasswordRequest:
+      description: User to enter old, new and confirm password to change his password
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+              confirmPassword:
+                type: string
+
+            required:
+              - oldPassword
+              - newPassword
+              - confirmPassword
+    BootcampRequest:
+      description: User to enter this fields to create a bootcamp
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BootcampBody"
+    CourseRequest:
+      description: User to enter this fields to create a bootcamp
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CourseBody"
+
+    ResetPasswordRequest:
+      description: User to reset password
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              password:
+                type: string
+
+            required:
+              - password
+
+            example:
+              password: abcdef
+
+    RegisterRequest:
+      description: Register with details
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              role:
+                type: string
+                enum: ["user", "publisher"]
+            required:
+              - name
+              - email
+              - password
+              - role
+            example:
+              name: Joe Doe
+              email: joe@gmail.com
+              password: "123456"
+              role: "user"
+    UpdateProfileRequest:
+      description: Update user email and name
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+
+            required:
+              - name
+              - email
+
+            example:
+              name: Joe Doe
+              email: joe@gmail.com
+
+  responses:
+    200LoginResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              token:
+                type: string
+            example:
+              success: true
+              token: eyJhbGciOiJIUzI1...
+    200GetUserResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              user:
+                $ref: "#/components/schemas/User"
+    200ResponseWithOutData:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+
+    # Bootcamp Response
+    200GetBootcampResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              count:
+                type: integer
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bootcamp"
+    200GetSingleBootcampResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              data:
+                $ref: "#/components/schemas/Bootcamp"
+    # Course
+    200CoursesResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              count:
+                type: integer
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+    200GetSingleCourseResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              data:
+                $ref: "#/components/schemas/Course"
+
+    # Error Response
+    400Error:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+
+            example:
+              success: false
+              error: ...
+    401UnauthenticatedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              error:
+                type: string
+
+            example:
+              success: false
+              error: Invalid credentials
+    401AuthTokenError:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              error:
+                type: string
+
+            example:
+              success: false
+              error: Unauthenticated user
+    403Error:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              error:
+                type: string
+
+            example:
+              success: false
+              error: Resources already exist
+    404Error:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              error:
+                type: string
+
+            example:
+              success: false
+              error: ...
+    500Error:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              error:
+                type: string
+            example:
+              success: false
+              error: ...
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
